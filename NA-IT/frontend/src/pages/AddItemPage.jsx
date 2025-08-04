@@ -92,9 +92,35 @@ const AddItemPage = () => {
     setLoading(true);
     setUploadProgress(0);
     
-    // Validation
-    if (!form.category_id || !form.serial_number || !form.brand || !form.model || !form.date_of_purchase || !form.status) {
-      setFormError('Please fill all required fields.');
+    // Enhanced validation
+    const requiredFields = {
+      category_id: 'Category',
+      serial_number: 'Serial Number', 
+      brand: 'Brand',
+      model: 'Model',
+      specifications: 'Specifications',
+      vendor: 'Vendor',
+      date_of_purchase: 'Date of Purchase',
+      warranty_end_date: 'Warranty End Date',
+      status: 'Status'
+    };
+
+    const missingFields = [];
+    Object.entries(requiredFields).forEach(([field, label]) => {
+      if (!form[field] || form[field].toString().trim() === '') {
+        missingFields.push(label);
+      }
+    });
+
+    if (missingFields.length > 0) {
+      setFormError(`Please fill all required fields: ${missingFields.join(', ')}`);
+      setLoading(false);
+      return;
+    }
+
+    // Check if at least one document is uploaded
+    if (selectedFiles.length === 0) {
+      setFormError('At least one document is required. Please upload a document.');
       setLoading(false);
       return;
     }
@@ -155,6 +181,17 @@ const AddItemPage = () => {
       <h1 className="text-2xl font-bold mb-4">Add New Item</h1>
       
       <div className="max-w-2xl">
+        {/* Required Fields Summary */}
+        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <h3 className="font-medium text-blue-800 mb-2">📋 Required Fields:</h3>
+          <ul className="text-sm text-blue-700 space-y-1">
+            <li>• Category, Serial Number, Brand, Model</li>
+            <li>• Specifications, Vendor Name</li>
+            <li>• Date of Purchase, Warranty End Date</li>
+            <li>• Status, At least one document</li>
+          </ul>
+        </div>
+        
         <form onSubmit={handleSubmit} className="mb-6 p-6 bg-white rounded-lg shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
@@ -212,7 +249,7 @@ const AddItemPage = () => {
             </div>
             
             <div className="md:col-span-2">
-              <label className="block mb-2 font-medium text-gray-700">Specifications</label>
+              <label className="block mb-2 font-medium text-gray-700">Specifications *</label>
               <textarea 
                 name="specifications" 
                 value={form.specifications} 
@@ -220,11 +257,12 @@ const AddItemPage = () => {
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
                 rows="3"
                 placeholder="Enter item specifications..."
+                required
               />
             </div>
             
             <div>
-              <label className="block mb-2 font-medium text-gray-700">Vendor</label>
+              <label className="block mb-2 font-medium text-gray-700">Vendor *</label>
               <input 
                 type="text" 
                 name="vendor" 
@@ -232,6 +270,7 @@ const AddItemPage = () => {
                 onChange={handleChange} 
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
                 placeholder="Enter vendor name..."
+                required
               />
             </div>
             
@@ -250,13 +289,14 @@ const AddItemPage = () => {
              </div>
              
              <div>
-               <label className="block mb-2 font-medium text-gray-700">Warranty End Date</label>
+               <label className="block mb-2 font-medium text-gray-700">Warranty End Date *</label>
                <input 
                  type="date" 
                  name="warranty_end_date" 
                  value={form.warranty_end_date} 
                  onChange={handleChange} 
                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                 required
                />
              </div>
              
@@ -278,7 +318,7 @@ const AddItemPage = () => {
 
              {/* Document Upload Section */}
              <div className="md:col-span-2">
-               <label className="block mb-2 font-medium text-gray-700">Upload Documents</label>
+               <label className="block mb-2 font-medium text-gray-700">Upload Documents *</label>
                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-400 transition-colors">
                  <input
                    type="file"
@@ -299,11 +339,14 @@ const AddItemPage = () => {
                    <p className="mt-2 text-sm text-gray-600">
                      Supported formats: PDF, Word, Excel, Images, Text files (Max 10MB each)
                    </p>
+                   <p className="mt-1 text-sm text-red-600 font-medium">
+                     ⚠️ At least one document is required
+                   </p>
                  </div>
                </div>
 
                {/* Selected Files Display */}
-               {selectedFiles.length > 0 && (
+               {selectedFiles.length > 0 ? (
                  <div className="mt-4">
                    <h4 className="font-medium text-gray-700 mb-2">Selected Files ({selectedFiles.length})</h4>
                    <div className="space-y-2">
@@ -348,6 +391,12 @@ const AddItemPage = () => {
                    >
                      Clear All Files
                    </button>
+                 </div>
+               ) : (
+                 <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                   <p className="text-yellow-700 text-sm">
+                     ⚠️ No documents selected. Please upload at least one document.
+                   </p>
                  </div>
                )}
              </div>
