@@ -3,6 +3,7 @@ import { getAllEmployees, deleteEmployee, createEmployee, updateEmployee } from 
 import { getAllDepartments } from '../services/departmentsService';
 import { getAllDesignations } from '../services/designationsService';
 import AuthContext from '../context/AuthContext';
+import axios from 'axios';
 
 const initialForm = { employee_name: '', department_id: '', designation_id: '' };
 
@@ -24,6 +25,15 @@ const EmployeesPage = () => {
   const userRole = user?.user?.role;
   const canEdit = userRole === 'Admin' || userRole === 'Operator';
 
+  const getAuthHeader = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.token) {
+      return { Authorization: 'Bearer ' + user.token };
+    } else {
+      return {};
+    }
+  };
+
   const fetchEmployees = async () => {
     setLoading(true);
     try {
@@ -36,12 +46,30 @@ const EmployeesPage = () => {
     setLoading(false);
   };
 
+  const fetchUniqueDepartments = async () => {
+    try {
+      const response = await axios.get('/api/employees/unique/departments', { headers: getAuthHeader() });
+      setDepartments(response.data);
+    } catch (err) {
+      console.error('Failed to fetch unique departments:', err);
+      setDepartments([]);
+    }
+  };
+
+  const fetchUniqueDesignations = async () => {
+    try {
+      const response = await axios.get('/api/employees/unique/designations', { headers: getAuthHeader() });
+      setDesignations(response.data);
+    } catch (err) {
+      console.error('Failed to fetch unique designations:', err);
+      setDesignations([]);
+    }
+  };
+
   useEffect(() => {
     fetchEmployees();
-    // Fetch departments
-    getAllDepartments().then(res => setDepartments(res.data)).catch(() => setDepartments([]));
-    // Fetch designations
-    getAllDesignations().then(res => setDesignations(res.data)).catch(() => setDesignations([]));
+    fetchUniqueDepartments();
+    fetchUniqueDesignations();
   }, []);
 
   const handleDelete = async (id) => {
@@ -151,8 +179,8 @@ const EmployeesPage = () => {
             >
               <option value="" className="text-gray-900">All Departments</option>
               {departments.map(dept => (
-                <option key={dept.department_id} value={dept.department_id} className="text-gray-900">
-                  {dept.department_name}
+                <option key={dept} value={dept} className="text-gray-900">
+                  {dept}
                 </option>
               ))}
             </select>
@@ -169,10 +197,8 @@ const EmployeesPage = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
             >
               <option value="" className="text-gray-900">All Designations</option>
-              {designations.map(desig => (
-                <option key={desig.designation_id} value={desig.designation_id} className="text-gray-900">
-                  {desig.designation_title}
-                </option>
+              {designations.map(des => (
+                <option key={des} value={des}>{des}</option>
               ))}
             </select>
           </div>
