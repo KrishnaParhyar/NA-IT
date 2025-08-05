@@ -158,16 +158,15 @@ exports.deleteItem = async (req, res) => {
         }
         
         // Check if item has documents
-        const [documents] = await db.query('SELECT COUNT(*) as count FROM item_documents WHERE item_id = ?', [id]);
-        console.log('🔍 Documents for this item:', documents[0].count);
-        
-        if (documents[0].count > 0) {
-            console.log('❌ Cannot delete item - has documents');
-            return res.status(400).json({ 
-                message: 'Cannot delete item. It has associated documents. Please remove documents first.',
-                documentCount: documents[0].count
-            });
-        }
+        // const [documents] = await db.query('SELECT COUNT(*) as count FROM item_documents WHERE item_id = ?', [id]);
+        // console.log('🔍 Documents for this item:', documents[0].count);
+        // if (documents[0].count > 0) {
+        //     console.log('❌ Cannot delete item - has documents');
+        //     return res.status(400).json({ 
+        //         message: 'Cannot delete item. It has associated documents. Please remove documents first.',
+        //         documentCount: documents[0].count
+        //     });
+        // }
         
         // Check if item is part of composite items
         const [compositeItems] = await db.query('SELECT COUNT(*) as count FROM composite_items WHERE desktop_id = ? OR cpu_id = ? OR lcd_id = ? OR keyboard_id = ? OR mouse_id = ? OR speaker_id = ?', [id, id, id, id, id, id]);

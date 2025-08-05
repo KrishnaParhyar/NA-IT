@@ -30,4 +30,16 @@ exports.updateEmployee = async (employee_id, employee) => {
 exports.deleteEmployee = async (employee_id) => {
   const sql = 'DELETE FROM employees WHERE employee_id = ?';
   return db.query(sql, [employee_id]);
+};
+
+// Get unique departments
+exports.getUniqueDepartments = async () => {
+  const sql = "SELECT DISTINCT department_id AS department FROM employees WHERE department_id IS NOT NULL AND department_id != ''";
+  return db.query(sql);
+};
+
+// Get unique designations
+exports.getUniqueDesignations = async () => {
+  const sql = "SELECT DISTINCT designation_id AS designation FROM employees WHERE designation_id IS NOT NULL AND designation_id != ''";
+  return db.query(sql);
 }; 

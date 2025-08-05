@@ -9,5 +9,7 @@ router.get('/:id', protect, restrictTo('Admin', 'Operator', 'Management'), emplo
 router.post('/', protect, restrictTo('Admin', 'Operator'), validateEmployee, employeesController.createEmployee);
 router.put('/:id', protect, restrictTo('Admin', 'Operator'), validateEmployee, employeesController.updateEmployee);
 router.delete('/:id', protect, restrictTo('Admin', 'Operator'), employeesController.deleteEmployee);
+router.get('/unique/departments', protect, restrictTo('Admin', 'Operator', 'Management'), employeesController.getUniqueDepartments);
+router.get('/unique/designations', protect, restrictTo('Admin', 'Operator', 'Management'), employeesController.getUniqueDesignations);
 
 module.exports = router; 

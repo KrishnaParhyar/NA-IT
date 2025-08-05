@@ -60,7 +60,7 @@ const ReportsPage = () => {
 
   const fetchDepartments = async () => {
     try {
-      const response = await axios.get('/api/departments', { headers: getAuthHeader() });
+      const response = await axios.get('/api/employees/unique/departments', { headers: getAuthHeader() });
       setDepartments(response.data);
     } catch (err) {
       console.error('Failed to fetch departments:', err);
@@ -146,7 +146,7 @@ const ReportsPage = () => {
              <h3>Applied Filters:</h3>
              <p>Employee: ${filters.employee ? employees.find(emp => emp.employee_id.toString() === filters.employee)?.employee_name || filters.employee : 'All Employees'}</p>
              <p>Item: ${filters.item ? items.find(item => item.item_id.toString() === filters.item)?.serial_number || filters.item : 'All Items'}</p>
-             <p>Department: ${filters.department ? departments.find(dept => dept.department_id.toString() === filters.department)?.department_name || filters.department : 'All Departments'}</p>
+             <p>Department: ${filters.department ? departments.find(dept => dept.toString() === filters.department)?.department_name || filters.department : 'All Departments'}</p>
              <p>Status: ${filters.status || 'All Status'}</p>
              <p>Total Records: ${filteredLogs.length} of ${issuanceLogs.length} logs</p>
            </div>
@@ -311,8 +311,8 @@ const ReportsPage = () => {
                 >
                   <option value="" className="text-gray-900">All Departments</option>
                   {departments.map(dept => (
-                    <option key={dept.department_id} value={dept.department_id} className="text-gray-900">
-                      {dept.department_name}
+                    <option key={dept} value={dept} className="text-gray-900">
+                      {dept}
                     </option>
                   ))}
                 </select>

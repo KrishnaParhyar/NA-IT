@@ -56,4 +56,24 @@ exports.deleteEmployee = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
+};
+
+// Get unique departments
+exports.getUniqueDepartments = async (req, res) => {
+  try {
+    const [results] = await employeesModel.getUniqueDepartments();
+    res.status(200).json(results.map(r => r.department));
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// Get unique designations
+exports.getUniqueDesignations = async (req, res) => {
+  try {
+    const [results] = await employeesModel.getUniqueDesignations();
+    res.status(200).json(results.map(r => r.designation));
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
 }; 

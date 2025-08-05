@@ -264,37 +264,25 @@ const EmployeesPage = () => {
               </div>
               <div className="mb-3">
                 <label className="block mb-1 font-medium">Department</label>
-                <select
+                <input
+                  type="text"
                   name="department_id"
                   className="w-full border px-2 py-1 rounded"
                   value={form.department_id}
                   onChange={handleFormChange}
                   required
-                >
-                  <option value="">Select Department</option>
-                  {departments.map(dep => (
-                    <option key={dep.department_id} value={dep.department_id}>
-                      {dep.department_name}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
               <div className="mb-3">
                 <label className="block mb-1 font-medium">Designation</label>
-                <select
+                <input
+                  type="text"
                   name="designation_id"
                   className="w-full border px-2 py-1 rounded"
                   value={form.designation_id}
                   onChange={handleFormChange}
                   required
-                >
-                  <option value="">Select Designation</option>
-                  {designations.map(des => (
-                    <option key={des.designation_id} value={des.designation_id}>
-                      {des.designation_title}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
               <div className="flex justify-end space-x-2 mt-4">
                 <button
